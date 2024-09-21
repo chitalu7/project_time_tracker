@@ -16,6 +16,11 @@
             <form method="POST" action="{{ url_for('clock_in', project_id=project.id) }}">
                 <button type="submit">Clock In</button>
             </form>
+
+            <form method="POST" action="{{ url_for('complete_project', project_id=project.id) }}">
+                <button type="submit">Mark as Complete</button>
+            </form>
+            
             {% for timesheet in timesheets %}
                 {% if timesheet.project_id == project.id and not timesheet.clock_out %}
                     <form method="POST" action="{{ url_for('clock_out', timesheet_id=timesheet.id) }}">

@@ -182,6 +182,29 @@ def clock_out(timesheet_id):
 
     return redirect(url_for('dashboard'))
 
+# Complete project route
+@app.route('/complete_project/<int:project_id>', methods=['POST'])
+@login_required
+def complete_project(project_id):
+    project = Project.query.get(project_id)
+
+    if project and project.user_id == current_user.id:
+        # Mark the project as complete
+        project.status = 'completed'
+        project.end_date = datetime.now()
+
+        # Move the project to the Archive table
+        archived_project = Archive(project_id=project.id, completed_date=project.end_date)
+        db.session.add(archived_project)
+
+        # Remove the project from the current projects list (or handle it differently as per your logic)
+        db.session.commit()
+
+        flash('Project marked as complete and moved to archive.')
+    else:
+        flash('Project not found or unauthorized action.')
+
+    return redirect(url_for('dashboard'))
 
 
 
