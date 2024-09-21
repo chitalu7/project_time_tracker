@@ -118,7 +118,73 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return f"Hello, {current_user.username}! Welcome to your dashboard!"
+    # Fetch projects only for the logged-in user
+    user_projects = Project.query.filter_by(user_id=current_user.id).all()
+    
+    # Fetch timesheets for the user's projects
+    user_timesheets = TimeSheet.query.filter(TimeSheet.user_id == current_user.id).all()
+
+    return render_template('dashboard.html', projects=user_projects, timesheets=user_timesheets)
+
+# Create a new project
+from datetime import datetime
+
+@app.route('/create_project', methods=['GET', 'POST'])
+@login_required
+def create_project():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        start_date = datetime.now()
+
+        # Create a new project for the current logged-in user
+        new_project = Project(name=name, start_date=start_date, user_id=current_user.id, status='ongoing')
+        db.session.add(new_project)
+        db.session.commit()
+
+        flash('Project created successfully!')
+        return redirect(url_for('dashboard'))
+
+    return render_template('create_project.html')
+
+
+# Clock-in & out routes
+@app.route('/clock_in/<int:project_id>', methods=['POST'])
+@login_required
+def clock_in(project_id):
+    clock_in_time = datetime.now()
+
+    # Create a new timesheet entry for the current user and project
+    new_timesheet = TimeSheet(project_id=project_id, user_id=current_user.id, clock_in=clock_in_time)
+    db.session.add(new_timesheet)
+    db.session.commit()
+
+    flash('Clocked in successfully!')
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/clock_out/<int:timesheet_id>', methods=['POST'])
+@login_required
+def clock_out(timesheet_id):
+    clock_out_time = datetime.now()
+    note = request.form.get('note')
+
+    # Find the timesheet entry and update it with the clock out time and note
+    timesheet = TimeSheet.query.get(timesheet_id)
+    if timesheet and timesheet.user_id == current_user.id:
+        timesheet.clock_out = clock_out_time
+        timesheet.note = note
+        db.session.commit()
+
+        flash('Clocked out successfully!')
+    else:
+        flash('Error: Timesheet not found or unauthorized action.')
+
+    return redirect(url_for('dashboard'))
+
+
+
+
+
 
 # User loader for Flask-Login
 @login_manager.user_loader
