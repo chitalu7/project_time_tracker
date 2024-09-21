@@ -207,6 +207,13 @@ def complete_project(project_id):
     return redirect(url_for('dashboard'))
 
 
+# Archived project
+@app.route('/archives')
+@login_required
+def archives():
+    archived_projects = db.session.query(Archive, Project).filter(Archive.project_id == Project.id, Project.user_id == current_user.id).all()
+
+    return render_template('archives.html', archived_projects=archived_projects)
 
 
 
