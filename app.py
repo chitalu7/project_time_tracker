@@ -120,11 +120,12 @@ def logout():
 def dashboard():
     # Fetch projects only for the logged-in user
     user_projects = Project.query.filter_by(user_id=current_user.id).all()
-    
-    # Fetch timesheets for the user's projects
+
+    # Fetch timesheets for the logged-in user's projects
     user_timesheets = TimeSheet.query.filter(TimeSheet.user_id == current_user.id).all()
 
     return render_template('dashboard.html', projects=user_projects, timesheets=user_timesheets)
+
 
 # Create a new project
 from datetime import datetime
@@ -180,6 +181,7 @@ def clock_out(timesheet_id):
         flash('Error: Timesheet not found or unauthorized action.')
 
     return redirect(url_for('dashboard'))
+
 
 
 

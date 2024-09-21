@@ -31,6 +31,19 @@
         <p>No projects found.</p>
     {% endif %}
 
+    <h3>Your Timesheets</h3>
+    {% if timesheets %}
+        <ul>
+        {% for timesheet in timesheets %}
+            <li>Project ID: {{ timesheet.project_id }} | Clock In: {{ timesheet.clock_in }} | Clock Out: {{ timesheet.clock_out }} | Note: {{ timesheet.note }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No timesheets found.</p>
+    {% endif %}
+
+
     <a href="{{ url_for('create_project') }}">Create a New Project</a>
 </body>
 </html>
+
