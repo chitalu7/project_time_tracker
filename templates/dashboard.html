@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h2>Hello, {{ current_user.username }}! Welcome to your dashboard.</h2>
+
+    <h3>Your Projects</h3>
+    {% if projects %}
+        <ul>
+        {% for project in projects %}
+            <li>{{ project.name }} - Status: {{ project.status }}</li>
+            <form method="POST" action="{{ url_for('clock_in', project_id=project.id) }}">
+                <button type="submit">Clock In</button>
+            </form>
+            {% for timesheet in timesheets %}
+                {% if timesheet.project_id == project.id and not timesheet.clock_out %}
+                    <form method="POST" action="{{ url_for('clock_out', timesheet_id=timesheet.id) }}">
+                        <label for="note">Note:</label>
+                        <input type="text" name="note" maxlength="500">
+                        <button type="submit">Clock Out</button>
+                    </form>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No projects found.</p>
+    {% endif %}
+
+    <a href="{{ url_for('create_project') }}">Create a New Project</a>
+</body>
+</html>
