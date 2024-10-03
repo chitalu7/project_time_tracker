@@ -1,0 +1,84 @@
+/* General page background */
+.dashboard-background {
+    background-color: #F8F9FA; /* Light Gray */
+    min-height: 100vh;
+    padding-top: 20px;
+}
+
+/* Primary heading color */
+h2 {
+    color: #007BFF; /* Primary Color (Blue) */
+}
+
+/* Secondary heading color */
+h3 {
+    color: #6C757D; /* Secondary Color (Gray) */
+}
+
+/* List group styling overrides for Bootstrap */
+.list-group-item {
+    border: 1px solid #6C757D; /* Gray borders */
+}
+
+/* Button hover overrides */
+.btn-primary:hover {
+    background-color: #5A9BD3; /* Accent Color (Light Blue) */
+}
+
+.btn-secondary:hover {
+    background-color: #5A9BD3; /* Accent Color (Light Blue) */
+}
+
+.btn-success:hover {
+    background-color: #28a745; /* Darker green for hover effect */
+}
+
+.btn-danger:hover {
+    background-color: #dc3545; /* Darker red for hover effect */
+}
+
+/* Navbar styling */
+.navbar-custom {
+    background-color: #007BFF; /* Primary Blue Color */
+}
+
+.navbar-brand, .navbar-text, .btn-outline-danger {
+    color: white !important; /* White text */
+}
+
+/* Navbar-toggler icon color */
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%28255, 255, 255, 1%29' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Offcanvas styling */
+.offcanvas {
+    width: 250px; /* Control sidebar width */
+}
+
+.offcanvas-body .nav-link {
+    font-size: 16px;
+    padding: 10px;
+    color: #343a40; /* Dark gray text */
+}
+
+.offcanvas-body .nav-link:hover {
+    background-color: #f8f9fa; /* Light gray on hover */
+    border-radius: 5px;
+}
+
+.offcanvas-body .nav-link i {
+    margin-right: 10px;
+}
+
+/* Active sidebar link */
+.offcanvas-body .nav-link.active {
+    background-color: #007BFF; /* Active link color */
+    color: white !important;
+    border-radius: 5px;
+}
+
+/* Hamburger icon styling */
+.navbar-toggler {
+    border-color: white; /* Ensures the button border is white */
+}
