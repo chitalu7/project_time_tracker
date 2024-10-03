@@ -4,33 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <h2>Hello, {{ current_user.username }}! Welcome to your dashboard.</h2>
+<body class="dashboard-background">
 
-    <h3>Your Projects</h3>
-    {% if projects %}
-        <ul>
-        {% for project in projects %}
-            <li>{{ project.name }} - Status: {{ project.status }}</li>
-            <form method="POST" action="{{ url_for('clock_in', project_id=project.id) }}">
-                <button type="submit">Clock In</button>
-            </form>
-            {% for timesheet in timesheets %}
-                {% if timesheet.project_id == project.id and not timesheet.clock_out %}
-                    <form method="POST" action="{{ url_for('clock_out', timesheet_id=timesheet.id) }}">
-                        <label for="note">Note:</label>
-                        <input type="text" name="note" maxlength="500">
-                        <button type="submit">Clock Out</button>
-                    </form>
-                {% endif %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">TempusLite</a>
+            <div class="ml-auto d-flex align-items-center">
+                <span class="navbar-text mr-3">Welcome, {{ current_user.username }}!</span>
+                <!-- Logout Button -->
+                <form method="POST" action="{{ url_for('logout') }}">
+                    <button type="submit" class="btn btn-outline-danger">Logout</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="container mt-5">
+        <h2 class="text-primary">Hello, {{ current_user.username }}! Welcome to your dashboard.</h2>
+
+        <h3 class="text-secondary">Your Projects</h3>
+        {% if projects %}
+            <ul class="list-group mb-4">
+            {% for project in projects %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ project.name }} - <span class="badge badge-info">{{ project.status }}</span>
+                    <div>
+                        <form method="POST" action="{{ url_for('clock_in', project_id=project.id) }}" class="d-inline">
+                            <!-- Disable the clock-in button if clocked_in is True for this project -->
+                            <button type="submit" class="btn btn-sm btn-primary"
+                                {% for timesheet in timesheets %}
+                                    {% if timesheet.project_id == project.id and timesheet.clocked_in %}
+                                        disabled
+                                    {% endif %}
+                                {% endfor %}>
+                                Clock In
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('complete_project', project_id=project.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-success">Mark as Complete</button>
+                        </form>
+                    </div>
+                </li>
+
+                <!-- Show clock-out button and note field if clocked in -->
+                {% for timesheet in timesheets %}
+                    {% if timesheet.project_id == project.id and timesheet.clocked_in and not timesheet.clock_out %}
+                        <li class="list-group-item">
+                            <form method="POST" action="{{ url_for('clock_out', timesheet_id=timesheet.id) }}">
+                                <div class="form-group">
+                                    <label for="note" class="form-label">Note:</label>
+                                    <input type="text" name="note" maxlength="500" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-sm btn-danger">Clock Out</button>
+                            </form>
+                        </li>
+                    {% endif %}
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No projects found.</p>
-    {% endif %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No projects found.</p>
+        {% endif %}
 
-    <a href="{{ url_for('create_project') }}">Create a New Project</a>
+        <h3 class="text-secondary">Your Timesheets</h3>
+        {% if timesheets %}
+            <ul class="list-group">
+            {% for timesheet in timesheets %}
+                <li class="list-group-item">
+                    Project ID: {{ timesheet.project_id }} | Clock In: {{ timesheet.clock_in }} | Clock Out: {{ timesheet.clock_out }} | Note: {{ timesheet.note }}
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No timesheets found.</p>
+        {% endif %}
+
+        <a href="{{ url_for('create_project') }}" class="btn btn-primary mt-4">Create a New Project</a>
+        <a href="{{ url_for('archives') }}" class="btn btn-secondary mt-4">View Archived Projects</a>
+
+        <!-- Clear Database Button -->
+        <form method="POST" action="{{ url_for('clear_db') }}" class="mt-4">
+            <button type="submit" class="btn btn-danger">Clear Database</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

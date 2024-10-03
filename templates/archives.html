@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Project</title>
+    <title>Archived Projects</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -25,14 +25,19 @@
     </nav>
 
     <div class="container mt-5">
-        <h2 class="text-primary">Create Project</h2>
-        <form method="POST" action="{{ url_for('create_project') }}">
-            <div class="form-group">
-                <label for="name" class="form-label">Project Name:</label>
-                <input type="text" name="name" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Create Project</button>
-        </form>
+        <h2 class="text-primary">Archived Projects</h2>
+        {% if archived_projects %}
+            <ul class="list-group mb-4">
+            {% for archive, project in archived_projects %}
+                <li class="list-group-item">
+                    {{ project.name }} - <span class="text-muted">Completed on: {{ archive.completed_date }}</span>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No archived projects found.</p>
+        {% endif %}
+
         <a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-4">Back to Dashboard</a>
     </div>
 
